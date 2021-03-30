@@ -96,6 +96,8 @@ bot.on('guildMemberUpdate', function (oldMember, newMember) {
 
 bot.on('message', function (message) {
     logger.debug(`[${message.guild.name}] [${message.channel.name}] [${message.author.username}] > ${message.content}`);
+    
+    // This code checks for the FIRST instance of the Channel ID in the webhook list
     if (chanArr.indexOf(message.channel.id) > -1) {
         if (relay) {
             // logger.debug('==== DEBUG ====');
@@ -103,7 +105,12 @@ bot.on('message', function (message) {
             // logger.debug(util.inspect(message.embeds));
             // logger.debug(message.type);
             // logger.debug('===============');
-            var obj = _.find(channels, function (obj) { return obj.id === message.channel.id; });
+            
+            // _.Find will only pull the FIRST result. We want ALL results.
+            //var obj = _.find(channels, function (obj) { return obj.id === message.channel.id; });
+            
+            //_.Filter will return ALL results. This gets us ALL Webhooks to output to.
+            var obj = _.filter(channels, function (obj) { return obj.id === message.channel.id; });
 
             var post_data = {};
             post_data.username = message.guild.name;
@@ -150,24 +157,30 @@ bot.on('message', function (message) {
                 post_data.content += '\n' + attach.url;
             }
 
-            var url = obj.webhook;
-            var options = {
-                method: 'post',
-                body: post_data,
-                json: true,
-                url: url
-            };
-            request(options, function (err, res, body) {
-                if (err) {
-                    console.error('error posting json: ', err)
-                    throw err
-                }
-                var headers = res.headers
-                var statusCode = res.statusCode
-                //console.log('headers: ', headers)
-                console.log('[STATUS] > Sent ', statusCode)
-                //console.log('body: ', body)
-            });
+            // This will loop through ALL output webhooks and send a request for each.
+            for(var i = 0; i < obj.length; i++){
+                //This code creates the data for the request
+                var url = obj[i].webhook;
+                var options = {
+                    method: 'post',
+                    body: post_data,
+                    json: true,
+                    url: url
+                };
+
+                // This code sends the data to the webhook
+                request(options, function (err, res, body) {
+                    if (err) {
+                        console.error('error posting json: ', err)
+                        throw err
+                    }
+                    var headers = res.headers
+                    var statusCode = res.statusCode
+                    //console.log('headers: ', headers)
+                    console.log('[STATUS] > Sent ', statusCode)
+                    //console.log('body: ', body)
+                });
+            }
         } else {
             logger.warn('==== WARN ====');
             logger.warn(`NOT SENDING MESSAGE DUE TO RELAY PROTECTION`);
