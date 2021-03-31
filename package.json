@@ -1,7 +1,7 @@
 {
-  "name": "discord-selfrelay",
-  "version": "1.0.0",
-  "description": "Relay messages from one Discord server to another via a selfbot and webhook",
+  "name": "Overlord",
+  "version": "0.1.0",
+  "description": "It is a very cool thing that cool people use :)",
   "main": "bot.js",
   "dependencies": {
     "discord-bot-webhook": "^1.0.4",
@@ -13,16 +13,17 @@
     "winston": "^2.4.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "node bot.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davidmckenzie/discord-selfrelay.git"
+    "url": "git+https://github.com/aScriptingOreo/Overlord.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/davidmckenzie/discord-selfrelay/issues"
+    "url": "https://github.com/aScriptingOreo/Overlord/issues"
   },
-  "homepage": "https://github.com/davidmckenzie/discord-selfrelay#readme"
+  "homepage": "https://github.com/aScriptingOreo/Overlord#readme"
 }
