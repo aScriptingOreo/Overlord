@@ -1,7 +1,7 @@
 {
   "name": "Overlord",
   "version": "0.1.0",
-  "description": "Relay messages from one Discord server to another via a selfbot and webhook",
+  "description": "It is a very cool thing that cool people use :)",
   "main": "bot.js",
   "dependencies": {
     "discord-bot-webhook": "^1.0.4",
