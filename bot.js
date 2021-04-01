@@ -11,6 +11,7 @@ bot.login(auth.token);
 var request = require("request");
 
 var channels = auth.channels;
+var consoleOutput = auth.consoleOutput;
 var chanArr = [];
 var relay = true;
 var timeout;
@@ -66,7 +67,7 @@ bot.on('disconnect', function (errMsg, code) {
 });
 
 bot.on('channelUpdate', function (oldChannel, newChannel) {
-    console.log('[STATUS] > Channel updating...');
+    if(consoleOutput) console.log('[STATUS] > Channel updating...');
     if (newChannel.permissionOverwrites.has(bot.user.id)) {
         logger.warn('[STATUS] > MISSING PERMISSIONS!');
         logger.warn(newChannel.permissionOverwrites);
@@ -76,7 +77,7 @@ bot.on('channelUpdate', function (oldChannel, newChannel) {
             relay = true;
         }, 1800000);
     } else {
-        console.log('[STATUS] > CLEAR!');
+        if(consoleOutput) console.log('[STATUS] > CLEAR!');
     }
 });
 
@@ -177,7 +178,7 @@ bot.on('message', function (message) {
                     var headers = res.headers
                     var statusCode = res.statusCode
                     //console.log('headers: ', headers)
-                    console.log('[STATUS] > Sent ', statusCode)
+                    if(consoleOutput) console.log('[STATUS] > Sent ', statusCode)
                     //console.log('body: ', body)
                 });
             }
