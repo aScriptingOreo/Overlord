@@ -5,7 +5,7 @@
   "main": "bot.js",
   "dependencies": {
     "discord-bot-webhook": "^1.0.4",
-    "discord.js": "^11.6.4",
+    "discord.js": "^12.5.3",
     "querystring": "^0.2.0",
     "request": "^2.83.0",
     "underscore": "^1.8.3",
@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "node bot.js"
+    "start": "node bot.js"
   },
   "repository": {
     "type": "git",

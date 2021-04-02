@@ -4,7 +4,6 @@ var Discord = require('discord.js');
 var _ = require("underscore");
 var logger = require('winston');
 logger.info('Initializing bot');
-logger.level = 'debug';
 var bot = new Discord.Client();
 bot.login(auth.token);
 
@@ -12,6 +11,14 @@ var request = require("request");
 
 var channels = auth.channels;
 var consoleOutput = auth.consoleOutput;
+
+// Debug level of logger outputs EVERYTHING
+if(consoleOutput){
+    logger.level = 'debug';
+} else{
+    // 0 level of logger outputs nothing
+    logger.level = '0';
+}
 var chanArr = [];
 var relay = true;
 var timeout;
@@ -23,7 +30,7 @@ bot.on('ready', function () {
     bot.user.setStatus('invisible')
         .then(console.log)
         .catch(console.error);
-    var channelArr = bot.channels.array();
+    var channelArr = bot.channels.cache.array();
     console.log(`\nAvailable channels:\n`);
     for (i in channelArr) {
         console.log(`[${channelArr[i].guild}] [${channelArr[i].name}] [${channelArr[i].id}]`);
@@ -114,11 +121,16 @@ bot.on('message', function (message) {
             var obj = _.filter(channels, function (obj) { return obj.id === message.channel.id; });
 
             var post_data = {};
-            post_data.username = message.guild.name;
+            // This posts the message under the SERVER name
+            //post_data.username = message.guild.name;
+            
+            // This will post the message using special formatting
+            post_data.username = `[#${message.channel.name}] [@${message.member.user.tag}]`;
+            post_data.avatar_url = message.author.avatarURL;
 
             if (message.content && message.content != '') {
                 logger.info(`$`);
-                post_data.content = `**[${message.guild.name}]** **[${message.channel.name}]** **[${message.member.user.tag}]**: ${message.content}`
+                post_data.content = `${message.content}`
             }
 
             if (message.embeds.length > 0) {
