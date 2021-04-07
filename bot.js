@@ -4,13 +4,21 @@ var Discord = require('discord.js');
 var _ = require("underscore");
 var logger = require('winston');
 logger.info('Initializing bot');
-logger.level = 'debug';
 var bot = new Discord.Client();
 bot.login(auth.token);
 
 var request = require("request");
 
 var channels = auth.channels;
+var consoleOutput = auth.consoleOutput;
+
+// Debug level of logger outputs EVERYTHING
+if(consoleOutput){
+    logger.level = 'debug';
+} else{
+    // 0 level of logger outputs nothing
+    logger.level = '0';
+}
 var chanArr = [];
 var relay = true;
 var timeout;
@@ -68,7 +76,7 @@ bot.on('disconnect', function (errMsg, code) {
 });
 
 bot.on('channelUpdate', function (oldChannel, newChannel) {
-    console.log('[STATUS] > Channel updating...');
+    if(consoleOutput) console.log('[STATUS] > Channel updating...');
     if (newChannel.permissionOverwrites.has(bot.user.id)) {
         logger.warn('[STATUS] > MISSING PERMISSIONS!');
         logger.warn(newChannel.permissionOverwrites);
@@ -78,7 +86,7 @@ bot.on('channelUpdate', function (oldChannel, newChannel) {
             relay = true;
         }, 1800000);
     } else {
-        console.log('[STATUS] > CLEAR!');
+        if(consoleOutput) console.log('[STATUS] > CLEAR!');
     }
 });
 
@@ -115,11 +123,21 @@ bot.on('message', function (message) {
             var obj = _.filter(channels, function (obj) { return obj.id === message.channel.id; });
 
             var post_data = {};
-            post_data.username = message.guild.name;
+            // This posts the message under the SERVER name
+            //post_data.username = message.guild.name;
+            
+            // This will post the message using special formatting
+            if(message.member.nickname != null){
+               post_data.username = `[${message.guild.name}][${message.channel.name}][${message.member.nickname}]`;
+            } else {
+                post_data.username = `[${message.guild.name}][${message.channel.name}][${message.member.user.tag}]`;
+            }
+            
+            post_data.avatar_url = message.author.displayAvatarURL();
 
             if (message.content && message.content != '') {
                 logger.info(`$`);
-                post_data.content = `**[${message.guild.name}]** **[${message.channel.name}]** **[${message.member.user.tag}]**: ${message.content}`
+                post_data.content = `${message.content}`
             }
 
             if (message.embeds.length > 0) {
@@ -179,7 +197,7 @@ bot.on('message', function (message) {
                     var headers = res.headers
                     var statusCode = res.statusCode
                     //console.log('headers: ', headers)
-                    console.log('[STATUS] > Sent ', statusCode)
+                    if(consoleOutput) console.log('[STATUS] > Sent ', statusCode)
                     //console.log('body: ', body)
                 });
             }
