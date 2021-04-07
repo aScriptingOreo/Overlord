@@ -127,8 +127,13 @@ bot.on('message', function (message) {
             //post_data.username = message.guild.name;
             
             // This will post the message using special formatting
-            post_data.username = `[#${message.channel.name}] [@${message.member.user.tag}]`;
-            post_data.avatar_url = message.author.avatarURL;
+            if(message.member.nickname != null){
+               post_data.username = `${message.guild.name} | ${message.channel.name} | ${message.member.nickname}`;
+            } else {
+                post_data.username = `${message.guild.name} | ${message.channel.name} | ${message.member.user.tag}`;
+            }
+            
+            post_data.avatar_url = message.author.displayAvatarURL();
 
             if (message.content && message.content != '') {
                 logger.info(`$`);
