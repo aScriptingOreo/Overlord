@@ -128,9 +128,9 @@ bot.on('message', function (message) {
             
             // This will post the message using special formatting
             if(message.member.nickname != null){
-               post_data.username = `${message.guild.name} | ${message.channel.name} | ${message.member.nickname}`;
+               post_data.username = `[${message.guild.name}][${message.channel.name}][${message.member.nickname}]`;
             } else {
-                post_data.username = `${message.guild.name} | ${message.channel.name} | ${message.member.user.tag}`;
+                post_data.username = `[${message.guild.name}][${message.channel.name}][${message.member.user.tag}]`;
             }
             
             post_data.avatar_url = message.author.displayAvatarURL();
