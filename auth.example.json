@@ -1,9 +1,17 @@
 {
     "token": "",
-    "webhook": "",
+    "consoleOutput": true,
+    "crashHook": "",
+    "newChannelHook": "",
     "channels": [
         {
-            "name": "",
+            "id": "",
+            "webhook": ""
+        }
+    ],
+    "servers": [
+        {
+            "id": "",
             "webhook": ""
         }
     ]

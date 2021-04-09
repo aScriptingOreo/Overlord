@@ -12,6 +12,7 @@ var request = require("request");
 var channels = auth.channels;
 var servers = auth.servers;
 var crashHook = auth.crashHook;
+var newChannelHook = auth.newChannelHook;
 var consoleOutput = auth.consoleOutput;
 
 // Debug level of logger outputs EVERYTHING
@@ -92,6 +93,36 @@ bot.on('disconnect', function (errMsg, code) {
     logger.warn(errMsg);
     logger.warn('----- Bot disconnected from Discord with code', code, 'for reason:', errMsg, '-----');
     bot.login(auth.token);
+});
+
+bot.on('channelCreate', function (newChannel) {
+    if(consoleOutput) console.log("New Channel " + newChannel.name + " has ID of " + newChannel.id);
+    
+    // Generate Data to send to webhook
+    var post_data = {};
+    post_data.username = "New Channel in " + newChannel.guild.name + "!";
+    post_data.content = "```Server: " + newChannel.guild.name + " - " + newChannel.guild.id + "\nChannel : " + newChannel.name + " - " + newChannel.id + "\nViewable : " + newChannel.viewable + "```";
+    // Output to the Crash Webhook
+    var url = newChannelHook;
+    var options = {
+        method: 'post',
+        body: post_data,
+        json: true,
+        url: url
+    };
+
+    // This code sends the data to the webhook
+    request(options, function (err, res, body) {
+        if (err) {
+            console.error('error posting json: ', err)
+            throw err
+        }
+        var headers = res.headers
+        var statusCode = res.statusCode
+        //console.log('headers: ', headers)
+        if(consoleOutput) console.log('[CHANNEL DATA] > Sent ', statusCode)
+        //console.log('body: ', body)
+    });
 });
 
 bot.on('channelUpdate', function (oldChannel, newChannel) {
