@@ -11,6 +11,7 @@ var request = require("request");
 
 var channels = auth.channels;
 var servers = auth.servers;
+var crashHook = auth.crashHook;
 var consoleOutput = auth.consoleOutput;
 
 // Debug level of logger outputs EVERYTHING
@@ -145,10 +146,11 @@ bot.on('message', function (message) {
             //post_data.username = message.guild.name;
             
             // This will post the message using special formatting
-            if(message.member.nickname != null){
+            if(message.member){
+                if(message.member.nickname != null)
                post_data.username = `[${message.guild.name}][${message.channel.name}][${message.member.nickname}]`;
             } else {
-                post_data.username = `[${message.guild.name}][${message.channel.name}][${message.member.user.tag}]`;
+                post_data.username = `[${message.guild.name}][${message.channel.name}][${message.author.tag}]`;
             }
             
             post_data.avatar_url = message.author.displayAvatarURL();
@@ -248,10 +250,11 @@ bot.on('message', function (message) {
             //post_data.username = message.guild.name;
             
             // This will post the message using special formatting
-            if(message.member.nickname != null){
+            if(message.member){
+                if(message.member.nickname != null)
                post_data.username = `[${message.guild.name}][${message.channel.name}][${message.member.nickname}]`;
             } else {
-                post_data.username = `[${message.guild.name}][${message.channel.name}][${message.member.user.tag}]`;
+                post_data.username = `[${message.guild.name}][${message.channel.name}][${message.author.tag}]`;
             }
             
             post_data.avatar_url = message.author.displayAvatarURL();
@@ -349,14 +352,43 @@ bot.on('error', function (error) {
 // Error handling to output that an error has occurred
 // This will keep the bot running in the case of a SOFT error only.
 process.on('uncaughtException', function (err) {
-    //console.error(err);
-    /*console.log("");
-    console.log("Node crashed... Restarting...");
-    console.log("(Bot will run but will not output data to console)");
-    console.log("");*/
+    var error = err;
+    // Generate Data to send to webhook
+    var post_data = {};
+    post_data.username = "Crash Log";
+    post_data.content = "```Javascript\n" + error.stack + "```";
+    console.error("fn : " + err.fileName);
+    // Output to the Crash Webhook
+    var url = crashHook;
+    var options = {
+        method: 'post',
+        body: post_data,
+        json: true,
+        url: url
+    };
+
+    // This code sends the data to the webhook
+    request(options, function (err, res, body) {
+        if (err) {
+            console.error('error posting json: ', err)
+            throw err
+        }
+        var headers = res.headers
+        var statusCode = res.statusCode
+        //console.log('headers: ', headers)
+        if(consoleOutput) console.log('[CRASH LOG] > Sent ', statusCode)
+        //console.log('body: ', body)
+    });
+    
+    if(consoleOutput){
+        console.log("");
+        console.log("Node crashed... Restarting...");
+        console.log("(Bot will run but will not output data to console)");
+        console.log("");
+    }
+    
     // Code to auto-reboot the bot in case of a hard crash
 
-    //console.log("Creating Exec Command");
     // Create an exec command which is executed before current process is killed
     var cmd = "npm start";
 
