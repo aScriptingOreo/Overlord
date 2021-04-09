@@ -345,3 +345,32 @@ bot.on('messageUpdate', function (oldMessage, newMessage) {
 bot.on('error', function (error) {
     logger.error(error);
 });
+
+// Error handling to output that an error has occurred
+// This will keep the bot running in the case of a SOFT error only.
+process.on('uncaughtException', function (err) {
+    //console.error(err);
+    /*console.log("");
+    console.log("Node crashed... Restarting...");
+    console.log("(Bot will run but will not output data to console)");
+    console.log("");*/
+    // Code to auto-reboot the bot in case of a hard crash
+
+    //console.log("Creating Exec Command");
+    // Create an exec command which is executed before current process is killed
+    var cmd = "npm start";
+
+    // Is this process already dead? If not, set it to be killed
+    if (process.killed === undefined) {
+      process.killed = true;
+        
+      // Execute the restart command, and kill the current process if it relaunched successfully
+      var exec = require('child_process').exec;
+      exec(cmd, function () {
+        process.kill();
+      });
+        
+    }
+});
+
+
