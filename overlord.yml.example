@@ -1,0 +1,23 @@
+bot_token: ## Your "bot" 😉
+owner_id: [<id1>, <id2>, <id3>, ...] ## array of user ids on discord that may use bot commands
+
+overlord:
+  <webhook_1>:
+    url: <web>
+    avatar_url: <bool> ## IF true, use the avatar of the message sender in the webhook
+    username: <bool> ## IF true, use the username of the message sender in the webhook
+    monitored_channels:
+      - <channel_id>
+      - <channel_id>
+      - <channel_id>
+      - <channel_id>
+
+  <webhook_2>:
+    url: <web>
+    avatar_url: <bool> ## IF true, use the avatar of the message sender in the webhook
+    username: <bool> ## IF true, use the username of the message sender in the webhook
+    monitored_channels:
+      - <channel_id>
+      - <channel_id>
+      - <channel_id>
+      - <channel_id>
