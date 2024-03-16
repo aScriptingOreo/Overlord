@@ -1,3 +1,4 @@
+[![TypeScript CI](https://github.com/aScriptingOreo/Overlord/actions/workflows/validation.yml/badge.svg?branch=main)](https://github.com/aScriptingOreo/Overlord/actions/workflows/validation.yml)
 # Overlord Bot
 
 This project is a Discord bot that monitors specific channels and performs actions based on the configuration provided in the overlord.yml file.
