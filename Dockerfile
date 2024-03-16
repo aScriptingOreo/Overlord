@@ -17,4 +17,4 @@ COPY . .
 
 
 # Define the command to run your application
-CMD [ "yarn", "start" ]
+CMD [ "yarn", "run", "start:dev" ]
