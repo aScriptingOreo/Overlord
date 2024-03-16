@@ -21,8 +21,8 @@ const bot = new discord.Client();
 
 bot.on('ready', () => {
   if (bot.user) {
-    for (let webhookName in overlordConfig.overlord) {
-      let olCfgTemp = overlordConfig.overlord[webhookName];
+    for (const webhookName in overlordConfig.overlord) {
+      const olCfgTemp = overlordConfig.overlord[webhookName];
       console.log(chalk.gray(`Monitored channels for ${chalk.blue(webhookName)}: ${chalk.green(olCfgTemp.monitored_channels)}`));
     }
     console.log(chalk.gray(`The sleeper agent ${chalk.red(bot.user.displayName)} has been activated`));
@@ -56,11 +56,11 @@ app.listen(port, () => {
 // Function to create a message event listener
 function messageCreate() {
   bot.on('messageCreate', async (message) => {
-    const output = `[${message.guild!.name}] [${(message.channel.type === 'GUILD_TEXT' ? message.channel.name : 'DM Channel')}]\n > ${message.author.username}`;
-    for (let webhookName in overlordConfig.overlord) {
-      let config = overlordConfig.overlord[webhookName];
+    const output = `\n[${message.guild!.name}] [${(message.channel.type === 'GUILD_TEXT' ? message.channel.name : 'DM Channel')}]\n > ${message.author.username}`;
+    for (const webhookName in overlordConfig.overlord) {
+      const config = overlordConfig.overlord[webhookName];
       let isMonitored = false;
-      for (let channelId of config.monitored_channels) {
+      for (const channelId of config.monitored_channels) {
   
         if (channelId == message.channel.id) {
           console.log(chalk.green(output));
@@ -83,9 +83,9 @@ function messageCreate() {
         break;
       }
     }
-    let isMonitored = false;
+    const isMonitored = false;
     if (!isMonitored) {
-      console.log(chalk.gray(output));
+      console.log(chalk.gray(`${output} ${message.content}`));
     }
   });
 }
